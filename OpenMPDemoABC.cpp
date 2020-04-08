@@ -18,11 +18,10 @@ enum ScheduleMode{
 class SharedArray{
     private:
         char *array;
-        int index;
         int size;
         bool usecritical;
     public:
-        SharedArray(int n, bool use) : size(n), index(0), usecritical(use){
+        SharedArray(int n, bool use) : size(n), usecritical(use){
             array = new char[size];
             std::fill(array, array+size, '-');
         }
@@ -31,12 +30,11 @@ class SharedArray{
             delete[] array;
         }
         
-        void addChar(char c, int i){
+        void addChar(char c, int index){
             #pragma omp critical
             {
-                array[i] = c;
+                array[index] = c;
                 spendSomeTime();
-                // index++;
             }
             
         }
