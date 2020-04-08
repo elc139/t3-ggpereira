@@ -19,9 +19,8 @@ class SharedArray{
     private:
         char *array;
         int size;
-        bool usecritical;
     public:
-        SharedArray(int n, bool use) : size(n), usecritical(use){
+        SharedArray(int n) : size(n){
             array = new char[size];
             std::fill(array, array+size, '-');
         }
@@ -31,12 +30,8 @@ class SharedArray{
         }
         
         void addChar(char c, int index){
-            #pragma omp critical
-            {
                 array[index] = c;
-                spendSomeTime();
-            }
-            
+                spendSomeTime();            
         }
 
         int countOcurrences(char c){
@@ -61,11 +56,12 @@ class ArrayFiller{
     private:
         static const int nThreads = 3;
         static const int nTimes = 20;
+        bool useCritical;
         SharedArray* array;
         ScheduleMode scheduleMode;
     public:
-        ArrayFiller(bool usecritical, ScheduleMode sch): scheduleMode(sch){
-            array = new SharedArray(nThreads * nTimes, usecritical);
+        ArrayFiller(bool usecritical, ScheduleMode sch): scheduleMode(sch), useCritical(usecritical){
+            array = new SharedArray(nThreads * nTimes);
         }
 
         void fillArrayConcurrently(){
@@ -98,11 +94,22 @@ class ArrayFiller{
                     break;
             }
     
-            #pragma omp parallel shared(array) private(i)
+            #pragma omp parallel shared(array) 
             {
-                #pragma omp for schedule(runtime)
+                #pragma omp for schedule(runtime) private(i)
                 for(i = 0; i < nTimes * nThreads; i++){
-                    array->addChar('A'+omp_get_thread_num(), i);
+                    if(useCritical){
+                        /* with mutual exclusion */
+                        #pragma omp critical
+                        {
+                            array->addChar('A'+omp_get_thread_num(), i);
+                        }
+
+                    } else {
+                        /* without mutual exclusion */
+                        array->addChar('A'+omp_get_thread_num(), i);
+                    }
+                    
                 }
             }
         }
@@ -158,6 +165,11 @@ int main(){
     ArrayFiller m7(true, AUTO);
     m7.fillArrayConcurrently();
     m7.printStats();
+
+    std::cout << "Caso 8 sem exclusao mutua(saida incorreta)" << std::endl;
+    ArrayFiller m8(false, DYNAMIC_WITH_CHUNK);
+    m8.fillArrayConcurrently();
+    m8.printStats();
 
     return 0;
 }
