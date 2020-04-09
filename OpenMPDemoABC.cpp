@@ -55,13 +55,14 @@ class SharedArray{
 class ArrayFiller{
     private:
         static const int nThreads = 3;
-        static const int nTimes = 20;
+        static const int nChunk = 20;
+        static const int size = 120;
         bool useCritical;
         SharedArray* array;
         ScheduleMode scheduleMode;
     public:
         ArrayFiller(bool usecritical, ScheduleMode sch): scheduleMode(sch), useCritical(usecritical){
-            array = new SharedArray(nThreads * nTimes);
+            array = new SharedArray(size);
         }
 
         void fillArrayConcurrently(){
@@ -71,20 +72,20 @@ class ArrayFiller{
 
             switch(scheduleMode){
                 case DYNAMIC_WITH_CHUNK:
-                    omp_set_schedule(omp_sched_dynamic, nTimes);
+                    omp_set_schedule(omp_sched_dynamic, nChunk);
                     break;
                 case DYNAMIC_WITHOUT_CHUNK:
                     /* chunksize < 1 uses default value */
                     omp_set_schedule(omp_sched_dynamic, 0);
                     break;
                 case STATIC_WITH_CHUNK:
-                    omp_set_schedule(omp_sched_static, nTimes);
+                    omp_set_schedule(omp_sched_static, nChunk);
                     break;
                 case STATIC_WITHOUT_CHUNK:
                     omp_set_schedule(omp_sched_static, 0);
                     break;
                 case GUIDED_WITH_CHUNK:
-                    omp_set_schedule(omp_sched_guided, nTimes);
+                    omp_set_schedule(omp_sched_guided, nChunk);
                     break;
                 case GUIDED_WITHOUT_CHUNK:
                     omp_set_schedule(omp_sched_guided, 0);
@@ -97,7 +98,7 @@ class ArrayFiller{
             #pragma omp parallel shared(array) 
             {
                 #pragma omp for schedule(runtime) private(i)
-                for(i = 0; i < nTimes * nThreads; i++){
+                for(i = 0; i < size; i++){
                     if(useCritical){
                         /* with mutual exclusion */
                         #pragma omp critical
