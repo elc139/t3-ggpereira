@@ -5,7 +5,7 @@
 
 ### Casos de teste:
 O programa implementado é uma modificação do exemplo apresentado usando Threads, nesse caso foram feitas adaptações para o programa
-utilizar o OpenMP. São inseridos caracteres em um array compartilhado de 120 posições utilizando 3 threads(t0 = A, t1 = B, t2 = C):
+utilizar o OpenMP. São inseridos caracteres em um array compartilhado de 120 posições utilizando 3 threads(t0=A, t1=B, t2=C):
 
   	1. Schedule Static com especificação do chunk
     É especificado um chunk-size de valor 20, e a saída é: 
