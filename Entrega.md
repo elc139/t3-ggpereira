@@ -53,7 +53,8 @@ utilizar o OpenMP. São inseridos caracteres em um array compartilhado de 120 po
                   t0                                   t1                    t2              t0
     "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBBBBBBCCCCCCCCCCCCCCCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
     
-    Esse caso é o mesmo descrito acima com a exceção de que como não foi especificado um valor para o chunk, o padrão é 1. Por isso         vemos que a thread B fez apenas 18 iterações.
+    Esse caso é o mesmo descrito acima com a exceção de que como não foi especificado um valor para o chunk, o padrão é 1. 
+    Por isso vemos que a thread B fez apenas 18 iterações.
     
     7. Schedule Auto 
     "ABCABCABCABCABCABCABCABCABCABCABCABCABCABCABCABCABCABCABCABCABCABCABCABCABCABCABCABCABCABCABCABCABCABCABCABCABCABCABCABC"
