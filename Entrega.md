@@ -61,4 +61,5 @@ utilizar o OpenMP. São inseridos caracteres em um array compartilhado de 120 po
     
     Nesse caso o sistema escolheu o tipo de schedule, estático com chunk = 1
    
-    
+  ### Referências:
+  [OpenMP: For & Scheduling](http://jakascorner.com/blog/2016/06/omp-for-scheduling.html)
